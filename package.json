@@ -1,0 +1,38 @@
+{
+  "name": "cardtabs",
+  "version": "1.0.0",
+  "description": "An ultra-light jQuery plugin that allows for very simple tabs",
+  "main": "js/jquery.cardtabs.js",
+  "style": "css/jquery.cardtabs.css",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "jest",
+    "lint": "eslint js/ tests/",
+    "start": "npx serve docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PreCogSecurity/CardTabs.git"
+  },
+  "keywords": [
+    "jquery-plugin",
+    "tabs",
+    "cardtabs",
+    "ui"
+  ],
+  "author": "Thomas de Roo",
+  "license": "MIT",
+  "peerDependencies": {
+    "jquery": ">=1.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jquery": "^3.7.1",
+    "serve": "^14.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
