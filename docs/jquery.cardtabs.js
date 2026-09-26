@@ -5,55 +5,66 @@
  * Released under the MIT license
  */
 
-jQuery.fn.cardTabs = function(options){
-
-	var mainClass =  $(this).attr('class');
-	var activeCount = 0;
+jQuery.fn.cardTabs = function (options) {
 
 	var settings = $.extend({
-        theme: '',
-     }, options );
+		theme: ''
+	}, options);
 
-	// Initializing
-	var htmlInner = $(this).html();
-	var stack = $('<div />').addClass('card-tabs-stack').html(htmlInner);
-	var bar = $('<div />').addClass('card-tabs-bar');
+	// Capture element references up front instead of re-querying the DOM by
+	// string-concatenated class selectors. This keeps the plugin working when
+	// the container has multiple classes, no class attribute at all, or a
+	// class name containing special characters.
+	var $container = $(this);
+	var $stack = $('<div />').addClass('card-tabs-stack').html($container.html());
+	var $bar = $('<div />').addClass('card-tabs-bar');
 
-	$('.' + mainClass).children('div[data-tab]').each(function(){
-		bar.append($('<a />').attr('href', 'javascript:void();').data('tab', $(this).data('tab')).append($(this).data('tab')));
+	// Build the link bar from the tab divs
+	$container.children('div[data-tab]').each(function () {
+		var tabName = $(this).data('tab');
+		$bar.append($('<a />').attr('href', 'javascript:void();').data('tab', tabName).append(tabName));
 	});
 
-	$('.' + mainClass).html('').append(bar).append(stack);
+	$container.empty().append($bar).append($stack);
 
-
-	// Fixing the theme
-	if(settings.theme != ''){
-		$('.' + mainClass + ' .card-tabs-bar').addClass(settings.theme);
-		$('.' + mainClass + ' .card-tabs-stack').addClass(settings.theme);
+	// Apply the theme class to the generated elements
+	if (settings.theme !== '') {
+		$bar.addClass(settings.theme);
+		$stack.addClass(settings.theme);
 	}
 
-	function toggleTab(obj){
-		$('.' + mainClass + " .card-tabs-stack div[data-tab][data-tab='" + obj.data('tab') + "']").show();
-		$('.' + mainClass + " .card-tabs-stack div[data-tab][data-tab!='" + obj.data('tab') + "']").hide();
+	// Show the tab whose data-tab value matches and hide the rest. Values are
+	// compared via a filter callback instead of string-interpolated attribute
+	// selectors, so tab names containing quotes or other special characters
+	// cannot break the selector.
+	function toggleTab(obj) {
+		var tabName = obj.data('tab');
+		$stack.find('div[data-tab]').each(function () {
+			$(this).toggle($(this).data('tab') === tabName);
+		});
 	}
 
-	// Checking whether we have to set a tab as active
-    $('.' + mainClass + ' .card-tabs-stack').children('div[data-tab]').each(function () {
-    	if($(this).hasClass('active')){
-    		$('.' + mainClass + " .card-tabs-bar a[data-tab='" + $(this).data('tab') + "']").addClass('active');
-    		toggleTab($(this));
-    		$(this).removeClass('active');
-    		activeCount++;
-    	}
+	// Check whether a tab is marked as active
+	var activeCount = 0;
+	$stack.children('div[data-tab]').each(function () {
+		if ($(this).hasClass('active')) {
+			var tabName = $(this).data('tab');
+			$bar.find('a').filter(function () {
+				return $(this).data('tab') === tabName;
+			}).addClass('active');
+			toggleTab($(this));
+			$(this).removeClass('active');
+			activeCount++;
+		}
 	});
 
-	// Otherwise, it's the first one, and the first tab in the bar needs to be active
-	if(activeCount == 0){
-		$('.' + mainClass + ' .card-tabs-bar a:first-child').addClass('active');
+	// Otherwise the first tab in the bar is the active one
+	if (activeCount === 0) {
+		$bar.find('a:first-child').addClass('active');
 	}
 
-	$('.' + mainClass + ' .card-tabs-bar a').click(function(){
-		$('.' + mainClass + ' .card-tabs-bar a').removeClass('active');
+	$bar.find('a').click(function () {
+		$bar.find('a').removeClass('active');
 		$(this).addClass('active');
 		toggleTab($(this));
 	});
