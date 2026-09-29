@@ -1,0 +1,6 @@
+# Only docs/ is needed to build the image. Whitelisting that single directory
+# keeps .git, node_modules, coverage output, logs and any local scratch file out
+# of the build context, so they can never be captured in an image layer or sent
+# to the registry.
+*
+!docs

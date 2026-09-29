@@ -5,8 +5,40 @@ on:
     branches: [master, main]
   pull_request:
 
+# The workflow only ever reads the repository: give the GITHUB_TOKEN the
+# smallest set of permissions that still lets the checks run.
+permissions:
+  contents: read
+
+# A new push to the same branch supersedes the run that is already in flight.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  dependencies:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # --ignore-scripts: none of the dev dependencies need install hooks, and
+      # skipping them removes a supply-chain execution path from every install.
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
   test:
+    name: Tests and coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,16 +51,50 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
+
+      # Jest exits non-zero when a coverageThreshold is not met, so this both
+      # reports the numbers and gates the build on them.
+      - name: Run the test suite with coverage
+        run: npm test
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Lint
+        run: npm run lint
+
+  demo:
+    name: Demo is in sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
 
       - name: Regenerate demo copies from the authoritative sources
         run: npm run build:demo
 
       - name: Verify the committed demo copies are in sync
         run: git diff --exit-code -- docs/
-
-      - name: Run the test suite
-        run: npm test
-
-      - name: Lint
-        run: npm run lint

@@ -1,6 +1,6 @@
 {
   "name": "cardtabs",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Ultra-light jQuery plugin for very simple tabs",
   "main": "js/jquery.cardtabs.js",
   "style": "css/jquery.cardtabs.css",
@@ -10,8 +10,10 @@
   ],
   "scripts": {
     "build:demo": "node scripts/build-demo.js",
-    "test": "jest",
-    "lint": "eslint js tests scripts"
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "lint": "eslint js tests scripts docs/demo.js",
+    "verify": "npm run lint && npm test && npm run build:demo && git diff --exit-code -- docs/"
   },
   "repository": {
     "type": "git",
@@ -46,6 +48,18 @@
     ],
     "collectCoverageFrom": [
       "js/**/*.js"
-    ]
+    ],
+    "coverageReporters": [
+      "text",
+      "lcov"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 95,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
+    }
   }
 }

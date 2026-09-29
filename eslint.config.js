@@ -13,7 +13,17 @@ const sharedRules = {
 	'use-isnan': 'error',
 	'valid-typeof': 'error',
 	eqeqeq: ['error', 'always'],
-	curly: 'error'
+	curly: 'error',
+	// Injection sinks. The plugin renders author-supplied data-tab values, so
+	// keeping these on across every source set turns the hardening of the
+	// plugin into a rule the build enforces rather than a convention.
+	'no-eval': 'error',
+	'no-implied-eval': 'error',
+	'no-new-func': 'error',
+	'no-script-url': 'error',
+	'no-proto': 'error',
+	'no-with': 'error',
+	'no-template-curly-in-string': 'error'
 };
 
 module.exports = [
@@ -52,6 +62,22 @@ module.exports = [
 				...globals.node,
 				...globals.jest,
 				...globals.browser,
+				$: 'readonly'
+			}
+		},
+		rules: sharedRules
+	},
+	{
+		// The demo page's bootstrap: plain browser script on top of jQuery. It
+		// is first-party code, so it is linted with the same rules as the
+		// plugin rather than shipped unchecked.
+		files: ['docs/demo.js'],
+		languageOptions: {
+			ecmaVersion: 5,
+			sourceType: 'script',
+			globals: {
+				...globals.browser,
+				jQuery: 'readonly',
 				$: 'readonly'
 			}
 		},
