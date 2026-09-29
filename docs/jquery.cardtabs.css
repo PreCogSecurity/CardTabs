@@ -1,3 +1,11 @@
+/*!
+ * GENERATED FILE - do not edit.
+ *
+ * Produced by npm run build:demo from css/jquery.cardtabs.css.
+ * Change that source (and this script) instead, then re-run the build;
+ * CI fails when the committed copy in docs/ is out of date.
+ */
+
 div.card-tabs-bar{
 	border-bottom: 1px solid #eaecef;
 }

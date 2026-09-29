@@ -2,20 +2,27 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <!-- The demo loads nothing but its own files: same-origin scripts and
+             styles only, no plugins, no frames, no form posts. If tab content
+             ever manages to inject markup, the policy is what stops it from
+             running. -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
         <title>Card Tabs demo</title>
         <link rel='stylesheet' href='jquery.cardtabs.css'>
         <link rel='stylesheet' href='demo.css'>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script async defer src="https://buttons.github.io/buttons.js"></script>
+        <!-- jQuery is served from this directory (copied out of the locked
+             dev dependency by npm run build:demo) rather than from a public
+             CDN, so nothing a third party controls is loaded by this page. -->
+        <script src='jquery.min.js'></script>
         <script type='text/javascript' src='jquery.cardtabs.js'></script>
     </head>
     <body class='markdown-body'>
         <div class='holder'>
-        <a class='github' href='http://github.com/blekerfeld/CardTabs/'>Open on Github</a>
+        <a class='github' href='https://github.com/PreCogSecurity/CardTabs/'>Open on Github</a>
         <h1>CardTabs</h1>
         CardTabs is yet another ultra-light jQuery plugin that allows for very simple tabs. The usage is explained below, click here for a demo. CardTabs is licensed under MIT.<br /><br />
-        <a class="github-button" href="https://github.com/blekerfeld/cardtabs" data-size="large" data-show-count="true" aria-label="Star blekerfeld/cardtabs on GitHub">Star</a> <!-- Place this tag where you want the button to render. -->
-<a class="github-button" href="https://github.com/blekerfeld/cardtabs/archive/master.zip" data-icon="octicon-cloud-download" data-size="large" aria-label="Download blekerfeld/cardtabs on GitHub">Download</a><br /><br />
+        <a class='repo-link' href='https://github.com/PreCogSecurity/CardTabs'>Star PreCogSecurity/CardTabs on GitHub</a>
+        <a class='repo-link' href='https://github.com/PreCogSecurity/CardTabs/archive/refs/heads/master.zip'>Download</a><br /><br />
         <div class='links'>
         <pre><a href='#requirements'>Requirements</a>
 <a href='#simple_usage'>Simple usage</a>
@@ -153,12 +160,7 @@ div.card-tabs-stack.yourthemename div[data-tab] { /* The shown tab itself */
             &copy; 2017 - Thomas de Roo
         </div>
 
-        <script type='text/javascript'>
-            $('.tabsholder1').cardTabs();
-            $('.tabsholder2').cardTabs({theme: 'inset'});
-            $('.tabsholder3').cardTabs({theme: 'graygreen'});
-            $('.tabsholder4').cardTabs({theme: 'wiki'});
-        </script>
+        <script type='text/javascript' src='demo.js'></script>
         </div>
     </body>
 </html>

@@ -1,0 +1,25 @@
+version: 2
+
+updates:
+  # Keep the Jest/ESLint toolchain patched. Dependabot opens the pull request,
+  # CI re-runs the tests and the coverage gate against it.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "build(deps)"
+    groups:
+      dev-dependencies:
+        patterns:
+          - "*"
+        dependency-type: development
+
+  # The workflow itself runs third-party actions on every push.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "ci"
